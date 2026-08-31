@@ -2,6 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Code Generation Guidelines
+
+**IMPORTANT**: When generating any code, ALWAYS first refere to the
+relevant documentation files within the `/docs` directory to understand exiting patterns, conventions, and the best practices before implementation.
+
+- /docs/ui.md
+
 ## Commands
 
 ```bash
