@@ -5,46 +5,62 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { duration } from "drizzle-orm/gel-core";
 
-export default function DashboardPage() {
+type Exercise = { name: string; durationMinutes: number };
+
+type WorkoutSession = {
+  id: number;
+  title: string;
+  time: string;
+  exercises: Exercise[];
+};
+
+// Mock workout data - will be replaced with actual data fetching
+const mockWorkoutSessions: WorkoutSession[] = [
+  {
+    id: 1,
+    title: "Upper Body Strength",
+    time: "09:00 AM",
+    exercises: [
+      { name: "Bench Press", durationMinutes: 12 },
+      { name: "Pull-ups", durationMinutes: 8 },
+      { name: "Shoulder Press", durationMinutes: 10 }
+    ]
+  },
+  {
+    id: 2,
+    title: "Lower Body Strength",
+    time: "02:30 PM",
+    exercises: [
+      { name: "Squats", durationMinutes: 15 },
+      { name: "Leg Press", durationMinutes: 10 },
+      { name: "Leg Curls", durationMinutes: 8 }
+    ]
+  },
+  {
+    id: 3,
+    title: "Back & Core",
+    time: "06:00 PM",
+    exercises: [
+      { name: "Deadlifts", durationMinutes: 14 },
+      { name: "Barbell Rows", durationMinutes: 12 },
+      { name: "Planks", durationMinutes: 6 }
+    ]
+  }
+];
+
+function getTotalMinutes(session: WorkoutSession): number {
+  return session.exercises.reduce((sum, e) => sum + e.durationMinutes, 0);
+}
+
+export default function DashboardPage(): React.JSX.Element {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  // Mock workout data - will be replaced with actual data fetching
-  const mockWorkoutSessions = [
-    {
-      id: 1,
-      title: "Upper Body Strength",
-      time: "09:00 AM",
-      exercises: [
-        { name: "Bench Press", duration: "12 min" },
-        { name: "Pull-ups", duration: "8 min" },
-        { name: "Shoulder Press", duration: "10 min" }
-      ]
-    },
-    {
-      id: 2,
-      title: "Lower Body Strength",
-      time: "02:30 PM",
-      exercises: [
-        { name: "Squats", duration: "15 min" },
-        { name: "Leg Press", duration: "10 min" },
-        { name: "Leg Curls", duration: "8 min" }
-      ]
-    },
-    {
-      id: 3,
-      title: "Back & Core",
-      time: "06:00 PM",
-      exercises: [
-        { name: "Deadlifts", duration: "14 min" },
-        { name: "Barbell Rows", duration: "12 min" },
-        { name: "Planks", duration: "6 min" }
-      ]
-    }
-  ];
+  function handleSelectDate(date: Date | undefined): void {
+    if (date) setSelectedDate(date);
+  }
 
-  let duration = 0;
+  const formattedDate = format(selectedDate, "do MMM yyyy");
 
   return (
     <div className="flex-1 bg-zinc-50 dark:bg-zinc-950">
@@ -63,7 +79,7 @@ export default function DashboardPage() {
               <Calendar
                 mode="single"
                 selected={selectedDate}
-                onSelect={(date) => date && setSelectedDate(date)}
+                onSelect={handleSelectDate}
                 className="w-full"
               />
               <div className="mt-6 p-4 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
@@ -71,7 +87,7 @@ export default function DashboardPage() {
                   Selected Date
                 </p>
                 <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-                  {format(selectedDate, "do MMM yyyy")}
+                  {formattedDate}
                 </p>
               </div>
             </Card>
@@ -81,7 +97,7 @@ export default function DashboardPage() {
           <div className="lg:col-span-3">
             <Card className="p-6">
               <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-6">
-                Workouts for {format(selectedDate, "do MMM yyyy")}
+                Workouts for {formattedDate}
               </h2>
 
               {mockWorkoutSessions.length > 0 ? (
@@ -100,25 +116,17 @@ export default function DashboardPage() {
                         </span>
                       </div>
                       <div className="space-y-2">
-                        {session.exercises.map((exercise, idx) => {
-                          const time = Number(
-                            exercise.duration.split(" ")?.[0]
-                          );
-                          if (time) {
-                            duration += time;
-                          }
-                          return (
-                            <Badge
-                              key={idx}
-                              className="text-sm text-zinc-700 dark:text-zinc-300 gap-7 border-2"
-                              variant={"secondary"}
-                            >
-                              {exercise.name}
-                            </Badge>
-                          );
-                        })}
+                        {session.exercises.map((exercise) => (
+                          <Badge
+                            key={exercise.name}
+                            className="text-sm text-zinc-700 dark:text-zinc-300 gap-7 border-2"
+                            variant="secondary"
+                          >
+                            {exercise.name}
+                          </Badge>
+                        ))}
                         <div className="mt-2 text-gray-500">
-                          Duration: {duration} min
+                          Duration: {getTotalMinutes(session)} min
                         </div>
                       </div>
                     </div>
@@ -138,4 +146,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
