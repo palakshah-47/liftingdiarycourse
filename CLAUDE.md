@@ -8,6 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 relevant documentation files within the `/docs` directory to understand exiting patterns, conventions, and the best practices before implementation.
 
 - /docs/ui.md
+- /docs/data-fetching.md
 
 ## Commands
 
