@@ -68,18 +68,25 @@ export default async function DashboardPage({
                       workout.startedAt,
                       workout.completedAt
                     );
+                    const isCompleted = workout.completedAt !== null;
                     return (
                       <div
                         key={workout.id}
                         className="p-4 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors"
                       >
-                        <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center justify-between mb-1">
                           <h3 className="font-semibold text-lg text-zinc-900 dark:text-zinc-50">
                             {workout.name ?? "Untitled Workout"}
                           </h3>
                           <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
                             {format(workout.startedAt, "hh:mm a")}
                           </span>
+                        </div>
+                        <div className="flex items-center gap-2 mb-3 text-sm text-zinc-500 dark:text-zinc-400">
+                          <span>{isCompleted ? "Completed" : "In Progress"}</span>
+                          {duration !== null && (
+                            <span>• Duration: {duration} min</span>
+                          )}
                         </div>
                         <div className="space-y-2">
                           {workout.workoutExercises.map((we) => (
@@ -91,11 +98,6 @@ export default async function DashboardPage({
                               {we.exercise.name}
                             </Badge>
                           ))}
-                          {duration !== null && (
-                            <div className="mt-2 text-gray-500">
-                              Duration: {duration} min
-                            </div>
-                          )}
                         </div>
                       </div>
                     );
